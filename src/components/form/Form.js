@@ -10,6 +10,7 @@ class Form extends Component {
       class: this.props.student ? this.props.student.class : "",
     };
   }
+
   componentDidMount() {
     console.log(this.props);
   }
@@ -23,6 +24,7 @@ class Form extends Component {
       this.setState({ class: event.target.value });
     }
   };
+
   handleUpdate = (event) => {
     event.preventDefault();
     const studentToUpdate = {
@@ -32,6 +34,7 @@ class Form extends Component {
     };
     this.props.handleUpdateStudent(studentToUpdate);
   };
+
   handleAdd = (event) => {
     event.preventDefault();
     const studentToAdd = {
@@ -41,47 +44,48 @@ class Form extends Component {
     };
     this.props.handleAddStudent(studentToAdd);
   };
+
   render() {
     return (
-      <div>
-        {!this.props.isFormBlank ? <h1>UPDATE FORM</h1> : <h1>ADD FORM</h1>}
-        <form>
-          <label>Student's ID </label>
-          <input
-            type="text"
-            placeholder="ID"
-            value={this.state.id}
-            onChange={(event) => this.updateValue(event, "id")}
-            readOnly
-          ></input>
-          <br></br>
-          <br></br>
+      <div className="popup-box">
+        <div className="box">
+          {!this.props.isFormBlank ? <h1>UPDATE FORM</h1> : <h1>ADD FORM</h1>}
+          <span className="close-icon" onClick={this.props.handleClose}>
+            x
+          </span>
+          <form>
+            <input
+              type="text"
+              placeholder="ID"
+              value={this.state.id}
+              onChange={(event) => this.updateValue(event, "id")}
+              readOnly
+            ></input>
 
-          <label>Student's Full Name </label>
-          <input
-            type="text"
-            placeholder="Full name"
-            value={this.state.fullName}
-            onChange={(event) => this.updateValue(event, "fullName")}
-          ></input>
+            <input
+              type="text"
+              placeholder="Full name"
+              value={this.state.fullName}
+              onChange={(event) => this.updateValue(event, "fullName")}
+            ></input>
 
-          <br></br>
-          <br></br>
-          <label>Student's Class </label>
-          <input
-            type="text"
-            placeholder="Class"
-            value={this.state.class}
-            onChange={(event) => this.updateValue(event, "class")}
-          ></input>
-          <br />
-          <br />
+            <input
+              type="text"
+              placeholder="Class"
+              value={this.state.class}
+              onChange={(event) => this.updateValue(event, "class")}
+            ></input>
+          </form>
           {!this.props.isFormBlank ? (
-            <button onClick={this.handleUpdate}>Update student</button>
+            <button className="btn1" onClick={this.handleUpdate}>
+              Edit student
+            </button>
           ) : (
-            <button onClick={this.handleAdd}>Add student</button>
+            <button className="btn1" onClick={this.handleAdd}>
+              Add student
+            </button>
           )}
-        </form>
+        </div>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import Student from "./student";
-import Form from "../form/Form";
 import _ from "lodash";
+
+import Form from "../form/Form";
 
 class ListItem extends Component {
   constructor(props) {
@@ -31,6 +31,7 @@ class ListItem extends Component {
         class: "",
       },
       isFormBlank: true,
+      count: 3,
     };
   }
 
@@ -45,10 +46,11 @@ class ListItem extends Component {
       isFormBlank: false,
     });
   };
+
   handleDeleteClick = (event, student) => {
     var index = _.findIndex(this.state.students, { id: student.id });
     var newArr = [...this.state.students];
-    newArr.pop(index);
+    newArr.splice(index, 1);
     this.setState({
       students: newArr,
     });
@@ -57,8 +59,8 @@ class ListItem extends Component {
   handleUpdateStudent = (student) => {
     var index = _.findIndex(this.state.students, { id: student.id });
     var newArr = [...this.state.students];
-    newArr.pop(index);
-    newArr.push(student);
+    newArr.splice(index, 1);
+    newArr.splice(index, 0, student);
     this.setState({
       students: newArr,
       formShow: false,
@@ -67,53 +69,98 @@ class ListItem extends Component {
 
   handleAddStudent = (student) => {
     var newArr = [...this.state.students];
-    student.id = this.state.students.length + 1;
+    var newID = this.state.count + 1;
+    student.id = newID;
     newArr.push(student);
     console.log(newArr);
     this.setState({
       students: newArr,
       formShow: false,
+      count: newID,
     });
   };
 
   handleAddClick = (event) => {
     event.preventDefault();
     this.setState({
-      formShow: true,
       isFormBlank: true,
+      formShow: true,
     });
   };
 
+  handleClose = (event) => {
+    event.preventDefault();
+    this.setState({
+      formShow: false,
+    });
+  };
+
+  renderTable = (students) => (
+    <div className="container">
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="1">ID</th>
+            <th colSpan="1">Full name</th>
+            <th colSpan="1">Class</th>
+            <th colSpan="1">Action</th>
+          </tr>
+        </thead>
+        {students.map((student) => (
+          <tbody key={student.id}>
+            <tr>
+              <td>{student.id}</td>
+              <td>{student.fullName}</td>
+              <td>{student.class}</td>
+              <td>
+                <button
+                  className="btn1"
+                  onClick={(event) => this.handleUpdateClick(event, student)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn1"
+                  onClick={(event) => this.handleDeleteClick(event, student)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        ))}
+      </table>
+    </div>
+  );
+
   render() {
-    const listItems = this.state.students.map((student) => (
-      <li key={student.id}>
-        <button onClick={(event) => this.handleUpdateClick(event, student)}>
-          Edit student No. {student.id}
-        </button>{" "}
-        <button onClick={(event) => this.handleDeleteClick(event, student)}>
-          Delete student No. {student.id}
-        </button>
-        <Student fullName={student.fullName} class={student.class} />
-      </li>
-    ));
     return (
       <div>
-        {listItems}
+        <div className="container">
+          <h1>Demo</h1>
+        </div>
+        {this.renderTable(this.state.students)}
         {this.state.formShow ? (
           !this.state.isFormBlank ? (
             <Form
               student={this.state.studentToPass}
               isFormBlank={this.state.isFormBlank}
               handleUpdateStudent={this.handleUpdateStudent}
+              handleClose={this.handleClose}
             />
           ) : (
             <Form
               isFormBlank={this.state.isFormBlank}
               handleAddStudent={this.handleAddStudent}
+              handleClose={this.handleClose}
             />
           )
         ) : (
-          <button onClick={this.handleAddClick}>Add new student</button>
+          <div className="container" style={{ paddingTop: "30px" }}>
+            <button className="btn1" onClick={this.handleAddClick}>
+              Add new student
+            </button>
+          </div>
         )}
       </div>
     );
